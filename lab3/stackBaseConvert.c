@@ -2,6 +2,7 @@
 #define MAX 100
 #include<string.h>
 
+//ACCOUNT FOR HEXADECIMAL AND OCTAL
 struct stack{
     int arr[MAX];
     int top;
