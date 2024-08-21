@@ -88,6 +88,10 @@ void main(){
         index++;
         }
     }
+    for(int i=0;stack.top>-1;i++){
+        output[index+i] = pop();
+        temp = i;
+    }
 
 
     output[index+temp] = '\0';
