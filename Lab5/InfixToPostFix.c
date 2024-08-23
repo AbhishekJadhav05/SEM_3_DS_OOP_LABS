@@ -1,40 +1,58 @@
-#include<stdio.h>;
+#include<stdio.h>
 #define MAX 100
 
-struct stack{
-    int arr[MAX];
+struct stack
+{
+    char arr[MAX];
     int top;
 }stack;
 
 void push(char element){
-
-    if(stack.top==MAX-1)
-    {
-        printf("Stack overflow");
+    if(stack.top == MAX-1){
+        printf("stack overflow");
         return;
     }
-    stack.arr[++stack.top]=element;
+    stack.arr[++stack.top] = element;
 }
+
 char pop(){
     if(stack.top == -1){
         printf("Stack underflow");
         return;
     }
     return stack.arr[stack.top--];
-
-}
-void display(){
-    if(stack.top == -1){
-        printf("Stack underflow");
-        return;
-    }
-    for(int i=stack.top;i>=0;i--){
-        printf("%c",stack.arr[i]);
-    }
 }
 
-char peep(){
+char peek(){
     return stack.arr[stack.top];
+}
+
+int isEmpty(){
+    if(stack.top == -1){
+        return 1;
+    }
+    else{
+        return 0;
+    }
+}
+
+int priority(char element){
+    switch (element)
+    {
+    case '+':
+    case '-':
+        return 1;
+
+    case '*':
+    case '/':
+        return 2;
+
+    case '(':
+            return 0;
+             
+    default:
+        return 3;
+    }
 }
 
 void main(){
@@ -42,59 +60,43 @@ void main(){
     char input[MAX];
     char output[MAX];
     int index = 0;
-    int temp = 0;
-    printf("enter the infix string : ");
+    printf("enter infix string : ");
     scanf("%s",input);
+
     for(int i=0;input[i] != '\0';i++){
-        if(input[i] == '+' ||input[i] == '-' ||input[i] == '*' ||input[i] == '/' || input[i] == '(' || input[i] == ')' ){
-            switch(input[i]){
-                case '+':
-                    if(stack.top != -1){
-                        output[index] = pop();
-                        index++;
-                        push('+');
-                    }
-                break;
+        //loop through the input array
 
-                case '-':
-                    if(stack.top !=-1){
-                        output[index] = pop();
-                        index++;
-                        push('-');
-                    }
-                break;
+        if(priority(input[i]) == 3){
+            output[index] = input[i];
+            index++;
+        }
 
-                case '*':
-                    push('*');
-                    break;
-                case '/':
-                    push('/');
-                    break;
+        else if(input[i] =='('){
+            push('(');
+        }
 
-                case '(':
-                    push('(');
-                    break;
-
-                case ')':
-                    for(int j = 0;peep() !='(';j++){
-                        output[index+j] = pop();
-                        temp = j;
-                    }
-                    index +=temp;
-                    pop();
+        else if (input[i] == ')') {
+            // Pop until '(' is found
+            while (!isEmpty() && peek() != '(') {
+                output[index++] = pop();
             }
-        }else{
-        output[index] = input[i];
-        index++;
+            if (!isEmpty()) {
+                pop();  // Discard '('
+            }
+        }
+
+        else {
+            // Operator encountered, check precedence
+            while (!isEmpty() && (priority(input[i]) <= priority(peek()))) {
+                output[index++] = pop();
+            }
+            push(input[i]);
         }
     }
-    for(int i=0;stack.top>-1;i++){
-        output[index+i] = pop();
-        temp = i;
+    while(!isEmpty()){
+        output[index] = pop();
+        index++;
     }
-
-
-    output[index+temp] = '\0';
+    output[index] = '\0';
     puts(output);
-
 }
