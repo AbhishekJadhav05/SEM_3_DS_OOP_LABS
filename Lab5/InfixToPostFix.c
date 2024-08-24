@@ -46,10 +46,11 @@ int priority(char element){
     case '*':
     case '/':
         return 2;
+    
+    case '(': //lowest priority as it will not interfere with other operators.
+    case ')':
+        return 0;
 
-    case '(':
-            return 0;
-             
     default:
         return 3;
     }
@@ -62,7 +63,7 @@ void main(){
     int index = 0;
     printf("enter infix string : ");
     scanf("%s",input);
-
+    
     for(int i=0;input[i] != '\0';i++){
         //loop through the input array
 
